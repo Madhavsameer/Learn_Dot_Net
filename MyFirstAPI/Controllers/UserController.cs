@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MyFirstAPI.Models;
 using MyFirstAPI.Data;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace MyFirstAPI.Controllers
 {
@@ -9,21 +9,11 @@ namespace MyFirstAPI.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private readonly UserDbContext _dbContext;
         private readonly MongoDbService _mongoService;
 
-        public UserController(UserDbContext dbContext, MongoDbService mongoService)
+        public UserController(MongoDbService mongoService)
         {
-            _dbContext = dbContext;
             _mongoService = mongoService;
-        }
-
-        // ✅ GET all users from SQL
-        [HttpGet("sql")]
-        public async Task<IActionResult> GetSqlUsers()
-        {
-            var users = await _dbContext.Users.ToListAsync();
-            return Ok(users);
         }
 
         // ✅ GET all users from MongoDB
@@ -34,13 +24,16 @@ namespace MyFirstAPI.Controllers
             return Ok(users);
         }
 
-        // ✅ POST user to SQL Server
-        [HttpPost("sql")]
-        public async Task<IActionResult> CreateSqlUser([FromBody] User newUser)
+        // ✅ GET user by ID from MongoDB
+        [HttpGet("mongo/{id}")]
+        public async Task<IActionResult> GetMongoUserById(int id)
         {
-            _dbContext.Users.Add(newUser);
-            await _dbContext.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetSqlUsers), new { id = newUser.Id }, newUser);
+            var user = await _mongoService.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found in MongoDB.");
+            }
+            return Ok(user);
         }
 
         // ✅ POST user to MongoDB
@@ -48,46 +41,34 @@ namespace MyFirstAPI.Controllers
         public async Task<IActionResult> CreateMongoUser([FromBody] User newUser)
         {
             await _mongoService.AddUserAsync(newUser);
-            return CreatedAtAction(nameof(GetMongoUsers), new { id = newUser.Id }, newUser);
-        }
-
-        // ✅ PUT update user in SQL Server
-        [HttpPut("sql/{id}")]
-        public async Task<IActionResult> UpdateSqlUser(int id, [FromBody] User updatedUser)
-        {
-            var user = await _dbContext.Users.FindAsync(id);
-            if (user == null) return NotFound();
-
-            user.Name = updatedUser.Name;
-            user.Email = updatedUser.Email;
-            await _dbContext.SaveChangesAsync();
-            return Ok(user);
+            return CreatedAtAction(nameof(GetMongoUserById), new { id = newUser.Id }, newUser);
         }
 
         // ✅ PUT update user in MongoDB
         [HttpPut("mongo/{id}")]
         public async Task<IActionResult> UpdateMongoUser(int id, [FromBody] User updatedUser)
         {
+            var existingUser = await _mongoService.GetUserByIdAsync(id);
+            if (existingUser == null)
+            {
+                return NotFound($"User with ID {id} not found in MongoDB.");
+            }
+
+            updatedUser.Id = id; // Ensure the correct ID is assigned
             await _mongoService.UpdateUserAsync(updatedUser);
             return Ok(updatedUser);
-        }
-
-        // ✅ DELETE user from SQL Server
-        [HttpDelete("sql/{id}")]
-        public async Task<IActionResult> DeleteSqlUser(int id)
-        {
-            var user = await _dbContext.Users.FindAsync(id);
-            if (user == null) return NotFound();
-
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
-            return Ok($"User with ID {id} deleted from SQL Server.");
         }
 
         // ✅ DELETE user from MongoDB
         [HttpDelete("mongo/{id}")]
         public async Task<IActionResult> DeleteMongoUser(int id)
         {
+            var existingUser = await _mongoService.GetUserByIdAsync(id);
+            if (existingUser == null)
+            {
+                return NotFound($"User with ID {id} not found in MongoDB.");
+            }
+
             await _mongoService.DeleteUserAsync(id);
             return Ok($"User with ID {id} deleted from MongoDB.");
         }

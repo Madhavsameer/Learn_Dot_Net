@@ -12,3 +12,4 @@ C:\Users\madha\OneDrive\Desktop\DOTNET\MyFirstApp\obj\Debug\net9.0\refint\MyFirs
 C:\Users\madha\OneDrive\Desktop\DOTNET\MyFirstApp\obj\Debug\net9.0\MyFirstApp.pdb
 C:\Users\madha\OneDrive\Desktop\DOTNET\MyFirstApp\obj\Debug\net9.0\MyFirstApp.genruntimeconfig.cache
 C:\Users\madha\OneDrive\Desktop\DOTNET\MyFirstApp\obj\Debug\net9.0\ref\MyFirstApp.dll
+C:\Users\madha\OneDrive\Desktop\DOTNET\MyFirstApp\obj\Debug\net9.0\MyFirstApp.sourcelink.json
