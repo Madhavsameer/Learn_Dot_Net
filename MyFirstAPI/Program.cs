@@ -7,8 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 var mysqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnection");
 
 // Configure MySQL Service Provider
+builder.Services.AddDbContext<BookContext>(options =>
+    options.UseMySql(mysqlConnectionString, new MySqlServerVersion(new Version(8, 0, 32))));
 builder.Services.AddDbContext<EmployeeContext>(options =>
     options.UseMySql(mysqlConnectionString, new MySqlServerVersion(new Version(8, 0, 32))));
+
 
 // Configure MongoDB Service Provider
 builder.Services.AddSingleton<MongoDbService>();
