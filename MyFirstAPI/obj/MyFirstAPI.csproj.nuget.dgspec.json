@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\madha\\OneDrive\\Desktop\\DOTNET\\MyFirstAPI\\MyFirstAPI.csproj": {}
+    "C:\\Users\\priyanshu kumar\\OneDrive\\Desktop\\DotNet\\Learn_Dot_Net\\MyFirstAPI\\MyFirstAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\madha\\OneDrive\\Desktop\\DOTNET\\MyFirstAPI\\MyFirstAPI.csproj": {
+    "C:\\Users\\priyanshu kumar\\OneDrive\\Desktop\\DotNet\\Learn_Dot_Net\\MyFirstAPI\\MyFirstAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\madha\\OneDrive\\Desktop\\DOTNET\\MyFirstAPI\\MyFirstAPI.csproj",
+        "projectUniqueName": "C:\\Users\\priyanshu kumar\\OneDrive\\Desktop\\DotNet\\Learn_Dot_Net\\MyFirstAPI\\MyFirstAPI.csproj",
         "projectName": "MyFirstAPI",
-        "projectPath": "C:\\Users\\madha\\OneDrive\\Desktop\\DOTNET\\MyFirstAPI\\MyFirstAPI.csproj",
-        "packagesPath": "C:\\Users\\madha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\madha\\OneDrive\\Desktop\\DOTNET\\MyFirstAPI\\obj\\",
+        "projectPath": "C:\\Users\\priyanshu kumar\\OneDrive\\Desktop\\DotNet\\Learn_Dot_Net\\MyFirstAPI\\MyFirstAPI.csproj",
+        "packagesPath": "C:\\Users\\priyanshu kumar\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\priyanshu kumar\\OneDrive\\Desktop\\DotNet\\Learn_Dot_Net\\MyFirstAPI\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\madha\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\priyanshu kumar\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
