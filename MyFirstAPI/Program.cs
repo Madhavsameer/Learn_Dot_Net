@@ -1,38 +1,58 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MyFirstAPI.Data;
+using MyFirstAPI.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read MySQL Connection String from appsettings.json
-var mysqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnection");
-
-// Configure MySQL Service Provider
 builder.Services.AddDbContext<BookContext>(options =>
-    options.UseMySql(mysqlConnectionString, new MySqlServerVersion(new Version(8, 0, 32))));
-builder.Services.AddDbContext<EmployeeContext>(options =>
-    options.UseMySql(mysqlConnectionString, new MySqlServerVersion(new Version(8, 0, 32))));
+    options.UseMySql(builder.Configuration.GetConnectionString("MySqlConnection"), new MySqlServerVersion(new Version(8, 0, 32))));
 
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<BookContext>()
+    .AddDefaultTokenProviders();
 
-// Configure MongoDB Service Provider
-builder.Services.AddSingleton<MongoDbService>();
+var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    });
 
-// Add Controllers
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        policy => policy.AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-});
 var app = builder.Build();
 app.UseCors("AllowAll");
-
-
-
-
+app.UseAuthentication();
 app.UseAuthorization();
+
+// Create Roles on Startup
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = { "Admin", "User" };
+    foreach (var role in roles)
+    {
+        if(!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<BookContext>()
+    .AddDefaultTokenProviders();
+
 app.MapControllers();
 app.Run();
