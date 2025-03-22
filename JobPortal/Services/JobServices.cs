@@ -8,6 +8,11 @@ public class JobService : IJobService
     {
         _context = context;
     }
+    public async Task<Job> GetJobById(Guid id)
+{
+    return await _context.Jobs.FindAsync(id);
+}
+
 
     public async Task<List<Job>> GetJobs() => await _context.Jobs.ToListAsync();
 
@@ -15,6 +20,7 @@ public class JobService : IJobService
     {
         job.Id = Guid.NewGuid();
         job.PostedBy = adminId;
+         job.CreatedAt = DateTime.UtcNow;
         await _context.Jobs.AddAsync(job);
         await _context.SaveChangesAsync();
         return job;

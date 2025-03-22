@@ -20,6 +20,17 @@ public class JobController : ControllerBase
         return Ok(await _jobService.GetJobs());
     }
 
+    [HttpGet("{id}")]
+public async Task<IActionResult> GetJobById(Guid id)
+{
+    var job = await _jobService.GetJobById(id);
+    if (job == null)
+        return NotFound("Job not found");
+    
+    return Ok(job);
+}
+
+
     // Add a new job (Only Admin)
     [HttpPost]
     [Authorize(Roles = "Admin")]
